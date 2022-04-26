@@ -1,0 +1,69 @@
+﻿<winex:WindowEx
+    x:Class="LAB_4.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:LAB_4"
+    xmlns:winex="using:WinUIEx"
+    xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Title="Eeee"
+    SizeChanged="Window_SizeChanged">
+
+    <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Style="{StaticResource RootStackPanel}" x:Name="RootStackPanel">
+        <TextBlock HorizontalAlignment="Center" Style="{StaticResource SubheaderTextBlock}">
+            Laboratory task №4 (variant №14)
+        </TextBlock>
+        <TextBlock Style="{StaticResource CenteredTextBlock}" TextAlignment="Center">
+                Remove all elements, less than N/2.
+        </TextBlock>
+
+        <Grid Padding="20" VerticalAlignment="Stretch">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="150" x:Name="ControlColumn"/>
+                <ColumnDefinition Width="20"/>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="20"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition x:Name="MainGridRow" Height="450"/>
+            </Grid.RowDefinitions>
+
+            <StackPanel Grid.Column="0" Grid.Row="0">
+                <TextBlock FontSize="15">Matrix size (N):</TextBlock>
+                <TextBox x:Name="MatrixSizeTextBox" Text="{Binding Path=MatrixSizeText, Mode=TwoWay}" TextChanged="MatrixSizeTextBox_TextChanged"/>
+
+                <Border Height="30"/>
+
+                <Button Width="{Binding ElementName=ControlColumn, Path=ActualWidth, Mode=OneWay}" Content="Generate matrix" x:Name="GenerateButton" Click="GenerateButton_Click"/>
+                <ProgressBar x:Name="GenerateProgressBar" Visibility="Collapsed" Margin="0,-2,0,0" IsIndeterminate="True"></ProgressBar>
+
+                <Border Height="30"/>
+                <!--Add IsEnabled binding-->
+                <Button Width="{Binding ElementName=ControlColumn, Path=ActualWidth, Mode=OneWay}" Content="Calculate result" IsEnabled="{Binding Path=CalcButtonEnabled, Mode=OneWay}" x:Name="CalcButton" Click="CalcButton_Click"/>
+                <ProgressBar x:Name="CalculateProgressBar" Visibility="Collapsed" Margin="0,-2,0,0" IsIndeterminate="True"></ProgressBar>
+            </StackPanel>
+
+            <Border Grid.Column="2" Grid.Row="0" BorderBrush="White" BorderThickness="1">
+                <StackPanel Padding="5">
+                    <TextBlock FontSize="15">Input matrix:</TextBlock>
+                    <controls:DataGrid MaxHeight="420" x:Name="InputMatrixGrid" AutoGenerateColumns="False" CanUserReorderColumns="False" CanUserResizeColumns="False" CanUserSortColumns="False" IsTextScaleFactorEnabled="True" HeadersVisibility="None" FrozenColumnCount="0" SelectionChanged="InputMatrixGrid_SelectionChanged"/>
+                </StackPanel>
+            </Border>
+
+            <Border Grid.Column="4" Grid.Row="0" BorderBrush="White" BorderThickness="1">
+                <StackPanel Padding="5">
+                    <TextBlock FontSize="15">Output matrix:</TextBlock>
+                    <controls:DataGrid MaxHeight="420" x:Name="OutputMatrixGrid" AutoGenerateColumns="False" CanUserReorderColumns="False" CanUserResizeColumns="False" CanUserSortColumns="False" IsTextScaleFactorEnabled="True" HeadersVisibility="None" FrozenColumnCount="0" SelectionChanged="OutputMatrixGrid_SelectionChanged"/>
+                </StackPanel>
+            </Border>
+
+        </Grid>
+
+        <TeachingTip x:Name="ErrorTip" Title="Error" Subtitle="{Binding Path=ErrorTipText, Mode=OneWay}" PreferredPlacement="Auto" PlacementMargin="20" IsLightDismissEnabled="True" CloseButtonContent="Close"/>
+
+    </StackPanel>
+</winex:WindowEx>
