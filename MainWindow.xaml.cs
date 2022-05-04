@@ -1,9 +1,7 @@
 ﻿using CommunityToolkit.WinUI.UI.Controls;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Data;
-using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data;
 using System.Dynamic;
@@ -154,8 +152,6 @@ namespace LAB_4 {
 
             SavedSize = NewMatrixSize;
             await Task.Run(GenerateMatrix, CancellationToken.None);
-            //await Task.Factory.StartNew(GenerateMatrix, TaskCreationOptions.LongRunning);
-
 
 
             RenderMatrix(InputMatrix, out InputMatrixRendered, InputMatrixGrid);
@@ -168,20 +164,23 @@ namespace LAB_4 {
 
         private void GenerateMatrix() {
             int NewMatrixSize = SavedSize;
-            // Also remove all columns
             for (int x = 0; x < NewMatrixSize; x++) {
-                // Add array
-                List<int> tmp = new();
-                // Add numbers
-                foreach (var v in Enumerable.Range(x + 1, NewMatrixSize - x)) {
-                    tmp.Add(v);
-                };
-                // Fill out with zeros
-                foreach (var v in (from _ in Enumerable.Range(0, x) select 0)) {
-                    tmp.Add(v);
-                }
-                InputMatrix.Add(tmp);
+                InputMatrix.Add((from v in Enumerable.Range(x + 1, NewMatrixSize) select v <= NewMatrixSize ? v : 0).ToList());
             }
+            // Also remove all columns
+            //for (int x = 0; x < NewMatrixSize; x++) {
+            //    //Add array
+            //    List<int> tmp = new();
+            //    // Add numbers
+            //    foreach (var v in Enumerable.Range(x + 1, NewMatrixSize - x)) {
+            //        tmp.Add(v);
+            //    };
+            //    // Fill out with zeros
+            //    foreach (var v in (from _ in Enumerable.Range(0, x) select 0)) {
+            //        tmp.Add(v);
+            //    }
+            //    InputMatrix.Add(tmp);
+            //}
         }
 
         public static void RenderMatrix(List<List<int>> matrix, out List<ExpandoObject> renderMatrix, DataGrid dataGrid) {
@@ -198,10 +197,8 @@ namespace LAB_4 {
                 renderMatrix.Add(new ExpandoObject());
                 // And columns to data grid
                 dataGrid.Columns.Add(new DataGridTextColumn() { Binding = new Binding() { Path = new PropertyPath($"{x}") }, IsReadOnly = true, FontSize = 15 });
-            }
 
-            // Convert regular nested list to a list with "dynamic" object
-            for (int x = 0; x < matrix.Count; x++) {
+                // Convert regular nested list to a list with "dynamic" object
                 for (int y = 0; y < matrix[x].Count; y++) {
                     renderMatrix[x].TryAdd(y.ToString(), matrix[x][y]);
                 }
@@ -213,14 +210,10 @@ namespace LAB_4 {
 
         private void CalculateResult() {
             float halfN = SavedSize / 2;
+            OutputMatrix.Clear();
 
-            OutputMatrix = InputMatrix;
-            for (int x = 0; x < OutputMatrix.Count; x++) {
-                for (int y = 0; y < OutputMatrix[x].Count; y++) {
-                    if (OutputMatrix[x][y] < halfN) {
-                        OutputMatrix[x][y] = 0;
-                    }
-                }
+            for (int x = 0; x < InputMatrix.Count; x++) {
+                OutputMatrix.Add((from v in InputMatrix[x] select v < halfN ? 0 : v).ToList());
             }
         }
 
